@@ -6,7 +6,9 @@ This was a fun challenge, especially because we got first blood on it :-)
  ![Challenge Web](images/challenge-web.png)
 
 
-The challenge was form of a binary named <code>chall</code>
+The challenge was in the form of a binary named <code>chall</code>
+
+## Inspecting the binary
 
 After importing the binary into Ghidra, the following code is found in the main()-function
 
@@ -21,7 +23,9 @@ In short the code does the following:
 
 My first thought was to see if i could find some win()-function and spray the memory with a couple of bytes that would jump to that function, but alas no such function could be found.
 
-So I turned to see if the strfry()-function was predictable. The function was as follows:
+## Looking at <b>strfry()</b>
+
+So I turned to see if the strfry()-function was predictable. (sploier: It was ;-))
 
  ![main](images/strfry.png)
 
@@ -30,6 +34,8 @@ So I turned to see if the strfry()-function was predictable. The function was as
  The pid of the current process could have be a problem, but because the CTF-infrastructure is using containers, the pid is actually always 1 :-)
 
 Okey, so we should be able to handle the scrambling-part. Then, what to send in.
+
+## Creating a payload
 
 With the awesome pwntools it's easy to generate some shellcode. 
 
@@ -43,7 +49,7 @@ this generates the following escaped string:
 
 Now this wont work. Only alphanumerics allowed.
 
-I tried using the pwnlib-function: pwnlib.encoders.encoder.alphanumeric(...), but i couldn't get that to work, so I found another encoder called [AE64](https://github.com/veritas501/ae64)
+I tried using the pwnlib-function: <b>pwnlib.encoders.encoder.alphanumeric(...)</b>, but i couldn't get that to work, so I found another encoder called [AE64](https://github.com/veritas501/ae64)
 
 Using that I could create a working payload with the following code:
 
@@ -63,8 +69,10 @@ This generates the following:
 WTYH39Yj3TYfi9WmWZj8TYfi9JBWAXjKTYfi9kCWAYjCTYfi93iWAZjcTYfi9O60t800T810T850T860T870T8A0t8B0T8D0T8E0T8F0T8G0T8H0T8P0t8T0T8YRAPZ0t8J0T8M0T8N0t8Q0t8U0t8WZjUTYfi9860t800T850T8P0T8QRAPZ0t81ZjhHpzbinzzzsPHAghriTTI4qTTTT1vVj8nHTfVHAf1RjnXZP
 </pre>
 
+## Reverse scrambling
+
 Okey, so now to handle the scrambling.
-I created to following C code to reverse-scramble the data:
+I modified the strfry()-function to following C code to reverse-scramble of the data:
 
 ```C
 #include <string.h>
@@ -83,6 +91,7 @@ strfry (char *string, int drift)
         static char state[32];
         rdata.state = NULL;
         time_t now = time ((time_t *) NULL);
+        // apply the drift seconds
         now += drift;
         
         initstate_r (now ^ 1, state, sizeof (state), &rdata);
@@ -134,9 +143,11 @@ This now generates a payload that is reverse scrambled so that it becomes correc
 
 ![gen](images/gen.png)
 
+## Xploiting
+
 So now we just have to use it.
 Had to try a couple of drift seconds, but then! Woop! :-)
 
 ![gen](images/xpl.png)
 
-A really nice challenge. Thanks <b>kfb</b>
+A really nice challenge. Thanks <b>TJCTF</b> and <b>kfb</b>
