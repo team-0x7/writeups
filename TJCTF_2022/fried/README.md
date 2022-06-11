@@ -25,7 +25,7 @@ My first thought was to see if i could find some win()-function and spray the me
 
 ## Looking at <b>strfry()</b>
 
-So I turned to see if the strfry()-function was predictable. (sploier: It was ;-))
+So I turned to see if the strfry()-function was predictable. (spoiler: It was ;-))
 
  ![main](images/strfry.png)
 
