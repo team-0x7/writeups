@@ -3,9 +3,6 @@
 ## reversing/eunectes-murinus
 
 ![chall](images/chall.png)
-```
-The green anaconda (Eunectes murinus), also known as the giant anaconda, common anaconda, common water boa or sucuri, is a boa species found in South America. It is the heaviest and one of the longest known extant snake species. Like all boas, it is a non-venomous constrictor.
-```
 
 In this challenge we are provided with a file named eunectes-murinus.pyc which is a compiled python module
 
